@@ -6,10 +6,8 @@ import json
 import os
 from dotenv import load_dotenv
 
-# Load environment variables (if any)
 load_dotenv()
 
-# --- CONFIGURATION ---
 st.set_page_config(
     page_title="FairLens Auditor",
     page_icon="⚖️",
@@ -17,8 +15,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Gemini API Configuration
-# Best practice: Use st.secrets for cloud deployment. Fallback to hardcoded for local demo.
 try:
     GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "AIzaSyDUlSroRRP33suW2uoaGBCjN1Yy4qWbqB0")
 except:
@@ -72,16 +68,13 @@ def load_mock_data():
     }
     return pd.DataFrame(data)
 
-# --- CUSTOM CSS FOR PREMIUM LOOK ---
 st.markdown("""
     <style>
-    /* Main Background and Typography */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         font-family: 'Inter', -apple-system, sans-serif;
     }
     
-    /* Glassmorphism Container */
     .glass-card {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(10px);
@@ -92,14 +85,12 @@ st.markdown("""
         margin-bottom: 20px;
     }
     
-    /* Metrics Styling */
     div[data-testid="stMetricValue"] {
         font-size: 2.2rem !important;
         font-weight: 800 !important;
         color: #1e293b !important;
     }
     
-    /* Header Styling */
     .header-container {
         padding: 40px 0;
         text-align: center;
@@ -113,12 +104,10 @@ st.markdown("""
         margin-bottom: 0;
     }
     
-    /* Sidebar Styling */
     .css-1d391kg {
         background-color: #ffffff !important;
     }
     
-    /* Buttons */
     .stButton>button {
         background: linear-gradient(45deg, #1e3a8a, #3b82f6);
         color: white !important;
@@ -134,7 +123,6 @@ st.markdown("""
         box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
     }
     
-    /* Dividers */
     hr {
         margin: 2rem 0 !important;
         border: 0;
@@ -143,16 +131,13 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- HEADER ---
 st.markdown('<div class="header-container"><p class="header-text">FairLens Auditor</p></div>', unsafe_allow_html=True)
 st.markdown('<p style="text-align: center; color: #64748b; font-size: 1.2rem; margin-top: -20px;">The Gold Standard for AI Fairness in the Indian Context</p>', unsafe_allow_html=True)
 
-# --- SIDEBAR ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3203/3203071.png", width=100)
     st.header("Control Panel")
     
-    # Initialize session state
     if 'df' not in st.session_state:
         st.session_state.df = None
     if 'audit_text' not in st.session_state:
@@ -182,7 +167,6 @@ with st.sidebar:
     st.checkbox("Caste Surnames", value=True)
     st.checkbox("Regional Pincodes", value=True)
 
-# --- MAIN LOGIC ---
 df = st.session_state.df
 
 if df is not None:
@@ -199,7 +183,6 @@ if df is not None:
     has_surname = 'surname' in [c.lower() for c in df.columns]
     has_pincode = 'pincode' in [c.lower() for c in df.columns]
 
-    # --- TOP METRICS ROW ---
     m1, m2, m3 = st.columns(3)
     with m1:
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
@@ -220,7 +203,6 @@ if df is not None:
         st.markdown('<p style="color: #64748b;">Socio-cultural indicators</p>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- CHARTS ROW ---
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     c1, c2 = st.columns([2, 1])
     
@@ -247,7 +229,6 @@ if df is not None:
         st.plotly_chart(fig_pie, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- PROXY ANALYTICS ---
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.subheader("Deep Proxy Audit")
     p1, p2, p3 = st.columns(3)
@@ -262,7 +243,6 @@ if df is not None:
         st.caption("Fairness confidence level")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- AI AUDIT ---
     st.markdown('<div class="glass-card" style="background: linear-gradient(135deg, #1e3a8a, #1e40af); color: white;">', unsafe_allow_html=True)
     st.subheader("AI Ethics Insights")
     if st.button("GENERATE AI AUDIT REPORT"):
