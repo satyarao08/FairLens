@@ -16,9 +16,9 @@ st.set_page_config(
 )
 
 try:
-    GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "AIzaSyDUlSroRRP33suW2uoaGBCjN1Yy4qWbqB0")
+    GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "you_api_key")
 except:
-    GEMINI_API_KEY = "AIzaSyDUlSroRRP33suW2uoaGBCjN1Yy4qWbqB0"
+    GEMINI_API_KEY = "your_api_key"
 
 def generate_gemini_audit(fairlens_score, male_app_rate, female_app_rate, has_surname, has_pincode):
     """Calls Gemini API with an automatic fallback for high-demand periods."""
