@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 try:
-    GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "you_api_key")
+    GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "your_api_key")
 except:
     GEMINI_API_KEY = "your_api_key"
 
@@ -70,6 +70,7 @@ def load_mock_data():
 
 st.markdown("""
     <style>
+    /* Main Background and Typography */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         font-family: 'Inter', -apple-system, sans-serif;
@@ -144,6 +145,12 @@ with st.sidebar:
         st.session_state.audit_text = None
 
     uploaded_file = st.file_uploader("Upload Hiring Data (CSV)", type=["csv"])
+    if uploaded_file is not None:
+        st.session_state.df = pd.read_csv(uploaded_file)
+        # Clear previous audit results when new data is uploaded
+        if 'last_uploaded' not in st.session_state or st.session_state.last_uploaded != uploaded_file.name:
+            st.session_state.audit_text = None
+            st.session_state.last_uploaded = uploaded_file.name
     
     col_a, col_b = st.columns(2)
     with col_a:
@@ -154,6 +161,7 @@ with st.sidebar:
     if load_mock:
         st.session_state.df = load_mock_data()
         st.session_state.audit_text = None
+        st.session_state.last_uploaded = None
         st.sidebar.success("Loaded Biased Sample!")
     
     if clear_data:
@@ -257,7 +265,6 @@ if df is not None:
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Welcome State
     st.markdown('<div class="glass-card" style="text-align: center; padding: 100px 50px;">', unsafe_allow_html=True)
     st.image("https://cdn-icons-png.flaticon.com/512/1162/1162456.png", width=150)
     st.markdown("## Ready to Audit Your AI?")
