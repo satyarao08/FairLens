@@ -16,9 +16,9 @@ st.set_page_config(
 )
 
 try:
-    GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "your_api_key")
+    GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "AIzaSyDUlSroRRP33suW2uoaGBCjN1Yy4qWbqB0")
 except:
-    GEMINI_API_KEY = "your_api_key"
+    GEMINI_API_KEY = "AIzaSyDUlSroRRP33suW2uoaGBCjN1Yy4qWbqB0"
 
 def generate_gemini_audit(fairlens_score, male_app_rate, female_app_rate, has_surname, has_pincode):
     """Calls Gemini API with an automatic fallback for high-demand periods."""
@@ -58,7 +58,6 @@ def generate_gemini_audit(fairlens_score, male_app_rate, female_app_rate, has_su
     raise Exception(f"All models are currently under high demand. Please try again in a moment. (Last error: {last_error})")
 
 def load_mock_data():
-    """Generates a biased dataset for demonstration purposes."""
     data = {
         'name': ['Rahul Sharma', 'Priya Rao', 'Amit Nair', 'Sneha Gupta', 'Vikram Singh', 'Anjali Das', 'Suresh Kumar', 'Megha Iyer', 'Rajesh Verma', 'Kavita Reddy'],
         'surname': ['Sharma', 'Rao', 'Nair', 'Gupta', 'Singh', 'Das', 'Kumar', 'Iyer', 'Verma', 'Reddy'],
@@ -76,6 +75,7 @@ st.markdown("""
         font-family: 'Inter', -apple-system, sans-serif;
     }
     
+    /* Glassmorphism Container */
     .glass-card {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(10px);
@@ -86,12 +86,14 @@ st.markdown("""
         margin-bottom: 20px;
     }
     
+    /* Metrics Styling */
     div[data-testid="stMetricValue"] {
         font-size: 2.2rem !important;
         font-weight: 800 !important;
         color: #1e293b !important;
     }
     
+    /* Header Styling */
     .header-container {
         padding: 40px 0;
         text-align: center;
@@ -105,10 +107,12 @@ st.markdown("""
         margin-bottom: 0;
     }
     
+    /* Sidebar Styling */
     .css-1d391kg {
         background-color: #ffffff !important;
     }
     
+    /* Buttons */
     .stButton>button {
         background: linear-gradient(45deg, #1e3a8a, #3b82f6);
         color: white !important;
@@ -124,6 +128,7 @@ st.markdown("""
         box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
     }
     
+    /* Dividers */
     hr {
         margin: 2rem 0 !important;
         border: 0;
@@ -139,6 +144,7 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3203/3203071.png", width=100)
     st.header("Control Panel")
     
+    # Initialize session state
     if 'df' not in st.session_state:
         st.session_state.df = None
     if 'audit_text' not in st.session_state:
@@ -178,7 +184,13 @@ with st.sidebar:
 df = st.session_state.df
 
 if df is not None:
-    # Logic for metrics
+    # Standardize column names to lowercase to avoid KeyErrors
+    df.columns = [str(c).lower().strip() for c in df.columns]
+    
+    if 'gender' not in df.columns or 'approved' not in df.columns:
+        st.error("⚠️ Invalid Dataset: Your uploaded CSV must contain 'gender' and 'approved' columns to run the audit.")
+        st.stop()
+        
     male_df = df[df['gender'].str.lower() == 'male']
     female_df = df[df['gender'].str.lower() == 'female']
     
@@ -274,5 +286,5 @@ else:
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Footer
 st.markdown('<p style="text-align: center; color: #64748b; margin-top: 50px;">FairLens Auditor v1.0 | Google Solution Challenge 2024</p>', unsafe_allow_html=True)
+
